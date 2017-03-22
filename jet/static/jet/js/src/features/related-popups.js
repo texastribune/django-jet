@@ -93,7 +93,7 @@ RelatedPopups.prototype = {
     initPopupBackButton: function() {
         var self = this;
 
-        $('.related-popup-back').on('click', function(e) {
+        $('.related-popup-back,.related-popup-container').on('click', function(e) {
             e.preventDefault();
             self.closePopup();
         });
