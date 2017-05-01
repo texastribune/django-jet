@@ -240,8 +240,10 @@ RelatedPopups.prototype = {
                         .trigger('select:init');
                 } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
                     $input.val($input.val() + ',' + response.value);
+                    $input.trigger('change');
                 } else if ($input.is('input')) {
                     $input.val(response.value);
+                    $input.trigger('change');
                 }
 
                 break;
