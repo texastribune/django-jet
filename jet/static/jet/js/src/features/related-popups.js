@@ -91,12 +91,18 @@ RelatedPopups.prototype = {
         });
     },
     initPopupBackButton: function() {
-        var self = this;
+      var self = this;
 
-        $('.related-popup-back').on('click', function(e) {
-            e.preventDefault();
-            self.closePopup();
-        });
+      $('.related-popup-back').on('click', function(e) {
+          e.preventDefault();
+          self.closePopup();
+      });
+
+      $('.related-popup-container').on('click', function(e) {
+        if ($(e.target).hasClass('related-popup-container')) {
+          self.closeOverlayOnClick();
+        }
+      });
     },
     showPopup: function($input, href) {
         var $document = $(window.top.document);
@@ -150,6 +156,38 @@ RelatedPopups.prototype = {
             }
         })(previousWindow ? previousWindow.jet.jQuery : $);
     },
+    closeOverlayOnClick: function() {
+      var self = this;
+      var previousWindow = this.windowStorage.previous();
+
+      (function($) {
+        var $document = $(window.top.document);
+        var $container = $document.find('.related-popup-container');
+
+        $container
+          .append($('<p/>'))
+          .text('There was an error. Save your work!')
+          .css({
+            color: 'white',
+            'text-align': 'center',
+            'font-size': '40px',
+            'font-weight': 'bold',
+            'padding-top': '100px'
+          });
+
+        self.windowStorage.pop();
+
+        setTimeout(function() {
+          $container.fadeOut(200, 'swing', function() {
+              $document.find('.related-popup-back').hide();
+              $document.find('body').removeClass('non-scrollable');
+              $('.related-popup').remove();
+              self.windowStorage = new WindowStorage('relatedWindows');
+              self.run();
+          });
+        }, 5000);
+      })(previousWindow ? previousWindow.jet.jQuery : $);
+    },
     findPopupResponse: function() {
         var self = this;
 
@@ -202,8 +240,10 @@ RelatedPopups.prototype = {
                         .trigger('select:init');
                 } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
                     $input.val($input.val() + ',' + response.value);
+                    $input.trigger('change');
                 } else if ($input.is('input')) {
                     $input.val(response.value);
+                    $input.trigger('change');
                 }
 
                 break;
@@ -217,7 +257,7 @@ RelatedPopups.prototype = {
             = window.showRelatedObjectPopup
             = function() { };
 
-        window.opener = this.windowStorage.previous();
+        window.opener = this.windowStorage.previous() || window.opener;
         window.dismissRelatedLookupPopup = function(win, chosenId) {
             self.closePopup({
                 action: 'lookup',
