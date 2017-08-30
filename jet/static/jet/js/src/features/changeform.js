@@ -45,7 +45,10 @@ ChangeForm.prototype = {
 };
 
 $(document).ready(function() {
-    $('.change-form').each(function() {
-        new ChangeForm($(this)).run();
-    });
+    // skip confirmation box in Django CMS plugin views
+    if (window.location.pathname.indexOf('edit-plugin') === -1) {
+      $('.change-form').each(function() {
+          new ChangeForm($(this)).run();
+      });
+    }
 });
