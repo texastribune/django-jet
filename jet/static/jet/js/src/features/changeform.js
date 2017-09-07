@@ -46,7 +46,8 @@ ChangeForm.prototype = {
 
 $(document).ready(function() {
     // skip confirmation box in Django CMS plugin views
-    if (window.location.pathname.indexOf('edit-plugin') === -1) {
+    // these are usually at /add-plugin/ or /edit-plugin/
+    if (window.location.pathname.indexOf('-plugin/') === -1) {
       $('.change-form').each(function() {
           new ChangeForm($(this)).run();
       });
