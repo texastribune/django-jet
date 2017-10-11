@@ -144,6 +144,13 @@ RelatedPopups.prototype = {
 
             self.windowStorage.pop();
 
+            if ($popups.length == 0) {
+                // Hack to close the Django CMS window when needed.
+                $sideframe_close = $document.find('.cms-sideframe-close');
+                if ($sideframe_close.length != 0) {
+                    $sideframe_close.click();
+                }
+            }
             if ($popups.length == 1) {
                 $container.fadeOut(200, 'swing', function() {
                     $document.find('.related-popup-back').hide();
@@ -200,53 +207,54 @@ RelatedPopups.prototype = {
     },
     processPopupResponse: function($popup, response) {
         var $input = $popup.data('input');
+        if ($input != undefined) {
+            switch (response.action) {
+                case 'change':
+                    $input.find('option').each(function() {
+                        var $option = $(this);
 
-        switch (response.action) {
-            case 'change':
-                $input.find('option').each(function() {
-                    var $option = $(this);
+                        if ($option.val() == response.value) {
+                            $option.html(response.obj).val(response.new_value);
+                        }
+                    });
 
-                    if ($option.val() == response.value) {
-                        $option.html(response.obj).val(response.new_value);
+                    $input.trigger('change').trigger('select:init');
+
+                    break;
+                case 'delete':
+                    $input.find('option').each(function() {
+                        var $option = $(this);
+
+                        if ($option.val() == response.value) {
+                            $option.remove();
+                        }
+                    });
+
+                    $input.trigger('change').trigger('select:init');
+
+                    break;
+                default:
+                    if ($input.is('select')) {
+                        var $option = $('<option>')
+                            .val(response.value)
+                            .html(response.obj);
+
+                        $input.append($option);
+                        $option.attr('selected', true);
+
+                        $input
+                            .trigger('change')
+                            .trigger('select:init');
+                    } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
+                        $input.val($input.val() + ',' + response.value);
+                        $input.trigger('change');
+                    } else if ($input.is('input')) {
+                        $input.val(response.value);
+                        $input.trigger('change');
                     }
-                });
 
-                $input.trigger('change').trigger('select:init');
-
-                break;
-            case 'delete':
-                $input.find('option').each(function() {
-                    var $option = $(this);
-
-                    if ($option.val() == response.value) {
-                        $option.remove();
-                    }
-                });
-
-                $input.trigger('change').trigger('select:init');
-
-                break;
-            default:
-                if ($input.is('select')) {
-                    var $option = $('<option>')
-                        .val(response.value)
-                        .html(response.obj);
-
-                    $input.append($option);
-                    $option.attr('selected', true);
-
-                    $input
-                        .trigger('change')
-                        .trigger('select:init');
-                } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
-                    $input.val($input.val() + ',' + response.value);
-                    $input.trigger('change');
-                } else if ($input.is('input')) {
-                    $input.val(response.value);
-                    $input.trigger('change');
-                }
-
-                break;
+                    break;
+            }
         }
     },
     overrideRelatedGlobals: function() {
