@@ -137,9 +137,16 @@ RelatedPopups.prototype = {
             var $popups = $document.find('.related-popup');
             var $container = $document.find('.related-popup-container');
             var $popup = $popups.last();
+            var $sideframeClose = $document.find('.cms-sideframe-close');
 
             if (response != undefined) {
-                self.processPopupResponse($popup, response);
+              // if DjangoCMS meta sideframe exists
+              if ($popup.length === 0 && $sideframeClose.length === 1) {
+                  $sideframeClose.trigger('click.cms.sideframe');
+                  window.top.location.reload();
+              } else {
+                  self.processPopupResponse($popup, response);
+              }
             }
 
             self.windowStorage.pop();
