@@ -132,7 +132,7 @@ RelatedPopups.prototype = {
         var previousWindow = this.windowStorage.previous();
         var self = this;
 
-        (function($) {
+        function init() {
             var $document = $(window.top.document);
             var $popups = $document.find('.related-popup');
             var $container = $document.find('.related-popup-container');
@@ -163,7 +163,13 @@ RelatedPopups.prototype = {
                 $popup.remove();
                 $popups.eq($popups.length - 2).show();
             }
-        })(previousWindow ? previousWindow.jet.jQuery : $);
+        }
+
+        try {
+          init(previousWindow.jet.jQuery);
+        } catch (e) {
+          init($);
+        }
     },
     closeOverlayOnClick: function() {
       var self = this;
