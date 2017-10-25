@@ -132,7 +132,7 @@ RelatedPopups.prototype = {
         var previousWindow = this.windowStorage.previous();
         var self = this;
 
-        function init() {
+        function init($) {
             var $document = $(window.top.document);
             var $popups = $document.find('.related-popup');
             var $container = $document.find('.related-popup-container');
