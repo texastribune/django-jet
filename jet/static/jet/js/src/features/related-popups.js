@@ -142,6 +142,8 @@ RelatedPopups.prototype = {
             if (response != undefined) {
               // if DjangoCMS meta sideframe exists
               if ($popup.length === 0 && $sideframeClose.length === 1) {
+                  // add class to indicate a confirmation box isn't needed
+                  $sideframeClose.addClass('is-form-submission');
                   $sideframeClose.trigger('click.cms.sideframe');
                   window.top.location.reload();
               } else {
