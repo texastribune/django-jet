@@ -132,14 +132,23 @@ RelatedPopups.prototype = {
         var previousWindow = this.windowStorage.previous();
         var self = this;
 
-        (function($) {
+        function init($) {
             var $document = $(window.top.document);
             var $popups = $document.find('.related-popup');
             var $container = $document.find('.related-popup-container');
             var $popup = $popups.last();
+            var $sideframeClose = $document.find('.cms-sideframe-close');
 
             if (response != undefined) {
-                self.processPopupResponse($popup, response);
+              // if DjangoCMS meta sideframe exists
+              if ($popup.length === 0 && $sideframeClose.length === 1) {
+                  // add class to indicate a confirmation box isn't needed
+                  $sideframeClose.addClass('trib-is-form-submission');
+                  $sideframeClose.trigger('click.cms.sideframe');
+                  window.top.location.reload();
+              } else {
+                  self.processPopupResponse($popup, response);
+              }
             }
 
             self.windowStorage.pop();
@@ -154,7 +163,13 @@ RelatedPopups.prototype = {
                 $popup.remove();
                 $popups.eq($popups.length - 2).show();
             }
-        })(previousWindow ? previousWindow.jet.jQuery : $);
+        }
+
+        try {
+          init(previousWindow.jet.jQuery);
+        } catch (e) {
+          init($);
+        }
     },
     closeOverlayOnClick: function() {
       var self = this;
