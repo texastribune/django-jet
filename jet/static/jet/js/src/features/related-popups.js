@@ -146,15 +146,14 @@ RelatedPopups.prototype = {
                 $sideframeClose.addClass('trib-is-form-submission');
                 $sideframeClose.trigger('click.cms.sideframe');
 
-                var parentLoc = window.top.location;
-
                 /**
-                  If the story is not published, update the URL
-                  in browser address bar with updated slug and
-                  pub date before refreshing.
+                  Update the URL in browser address bar with
+                  updated slug and pub date before refreshing.
                 */
-                if (parentLoc.pathname.indexOf('preview') !== -1) {
-                  var formMeta = window.parent.TT_SIDEFRAME_META;
+                var parentLoc = window.top.location;
+                var formMeta = window.parent.TT_SIDEFRAME_META;
+
+                if (formMeta) {
                   var urlParts = [
                     parentLoc.protocol,
                     '//',
@@ -163,13 +162,12 @@ RelatedPopups.prototype = {
                     formMeta.pubDate.replace(/-/g, '/'),
                     '/',
                     formMeta.slug,
-                    '/preview/',
+                    '/',
+                    parentLoc.pathname.indexOf('preview') !== -1 ? 'preview' : '',
                     parentLoc.search
                   ];
 
                   window.top.location.href = urlParts.join('');
-                } else {
-                  window.top.location.reload();
                 }
             } else {
                 self.processPopupResponse($popup, response);
