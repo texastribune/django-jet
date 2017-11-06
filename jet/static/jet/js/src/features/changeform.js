@@ -30,6 +30,7 @@ ChangeForm.prototype = {
         var $inputs = $form.find('input, textarea, select');
 
         $(document).on('submit', 'form', function() {
+            self.storeUrlValuesForDjangoCms();
             $(window).off('beforeunload', self.onWindowBeforeUnload);
         });
 
@@ -41,6 +42,33 @@ ChangeForm.prototype = {
         } catch (e) {
             console.error(e, e.stack);
         }
+    },
+    /**
+      Because's of Jet's very JavaScript-y form widgets,
+      we have to serialize the form before grabbing the pub date.
+      (Simply using .val() doesn't reflect changes made after the
+      page loads.) Then, we store the pub date and slug in a global
+      object so the URL can be updated when reloading the meta sideframe.
+    */
+    storeUrlValuesForDjangoCms: function() {
+      var $form = $('#article_form');
+
+      if ($form) {
+        var formData = $form.serializeArray();
+        var pubDate;
+
+        formData.forEach(function(datum) {
+          if (datum.name === 'pub_date_0') {
+            pubDate = datum.value;
+            return false;
+          }
+        });
+
+        window.parent.TT_SIDEFRAME_META = {
+          slug: $('#id_slug').val(),
+          pubDate: pubDate
+        };
+      }
     }
 };
 
