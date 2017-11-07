@@ -129,47 +129,70 @@ RelatedPopups.prototype = {
         $body.addClass('non-scrollable');
     },
     closePopup: function(response) {
-        var previousWindow = this.windowStorage.previous();
-        var self = this;
+      var previousWindow = this.windowStorage.previous();
+      var self = this;
 
-        function init($) {
-            var $document = $(window.top.document);
-            var $popups = $document.find('.related-popup');
-            var $container = $document.find('.related-popup-container');
-            var $popup = $popups.last();
-            var $sideframeClose = $document.find('.cms-sideframe-close');
+      function init($) {
+          var $document = $(window.top.document);
+          var $popups = $document.find('.related-popup');
+          var $container = $document.find('.related-popup-container');
+          var $popup = $popups.last();
+          var $sideframeClose = $document.find('.cms-sideframe-close');
 
-            if (response != undefined) {
-              // if DjangoCMS meta sideframe exists
-              if ($popup.length === 0 && $sideframeClose.length === 1) {
-                  // add class to indicate a confirmation box isn't needed
-                  $sideframeClose.addClass('trib-is-form-submission');
-                  $sideframeClose.trigger('click.cms.sideframe');
-                  window.top.location.reload();
-              } else {
-                  self.processPopupResponse($popup, response);
-              }
+          if (response != undefined) {
+            // if DjangoCMS meta sideframe exists
+            if ($popup.length === 0 && $sideframeClose.length === 1) {
+                // add class to indicate a confirmation box isn't needed
+                $sideframeClose.addClass('trib-is-form-submission');
+                $sideframeClose.trigger('click.cms.sideframe');
+
+                /**
+                  Update the URL in browser address bar with
+                  updated slug and pub date before refreshing.
+                */
+                var parentLoc = window.top.location;
+                var formMeta = window.parent.TT_SIDEFRAME_META;
+
+                if (formMeta) {
+                  var urlParts = [
+                    parentLoc.protocol,
+                    '//',
+                    parentLoc.host,
+                    '/',
+                    formMeta.pubDate.replace(/-/g, '/'),
+                    '/',
+                    formMeta.slug,
+                    '/',
+                    parentLoc.pathname.indexOf('preview') !== -1 ? 'preview' : '',
+                    parentLoc.search
+                  ];
+
+                  window.top.location.href = urlParts.join('');
+                }
+            } else {
+                self.processPopupResponse($popup, response);
             }
+          }
 
-            self.windowStorage.pop();
+          self.windowStorage.pop();
 
-            if ($popups.length == 1) {
-                $container.fadeOut(200, 'swing', function() {
-                    $document.find('.related-popup-back').hide();
-                    $document.find('body').removeClass('non-scrollable');
-                    $popup.remove();
-                });
-            } else if ($popups.length > 1) {
-                $popup.remove();
-                $popups.eq($popups.length - 2).show();
-            }
-        }
+          if ($popups.length == 1) {
+              $container.fadeOut(200, 'swing', function() {
+                  $document.find('.related-popup-back').hide();
+                  $document.find('body').removeClass('non-scrollable');
+                  $popup.remove();
+              });
+          } else if ($popups.length > 1) {
+              $popup.remove();
+              $popups.eq($popups.length - 2).show();
+          }
+      }
 
-        try {
-          init(previousWindow.jet.jQuery);
-        } catch (e) {
-          init($);
-        }
+      try {
+        init(previousWindow.jet.jQuery);
+      } catch (e) {
+        init($);
+      }
     },
     closeOverlayOnClick: function() {
       var self = this;
