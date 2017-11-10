@@ -163,7 +163,7 @@ RelatedPopups.prototype = {
                     '/',
                     formMeta.slug,
                     '/',
-                    parentLoc.pathname.indexOf('preview') !== -1 ? 'preview' : '',
+                    parentLoc.pathname.indexOf('preview') !== -1 ? 'preview/' : '/',
                     parentLoc.search
                   ];
 
