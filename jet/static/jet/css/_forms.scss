@@ -135,6 +135,10 @@ textarea {
 }
 
 input[type=checkbox] {
+  input[type=checkbox] + label {
+    display: none;
+  }
+
   &#action-toggle {
     display: none !important;
   }
