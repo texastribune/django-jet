@@ -135,7 +135,7 @@ textarea {
 }
 
 input[type=checkbox] {
-  input[type=checkbox] + label {
+  & + label {
     display: none;
   }
 
