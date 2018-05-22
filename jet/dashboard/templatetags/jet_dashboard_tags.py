@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 from django import template
+from django.contrib.admin.utils import quote
+from django.urls import NoReverseMatch, reverse
 from jet.dashboard.utils import get_current_dashboard
 
 register = template.Library()
@@ -21,3 +23,18 @@ def format_change_message(log_entry):
         return log_entry.get_change_message()
     else:
         return log_entry.change_message
+
+
+@register.filter
+def tt_admin_url(item):
+    """
+    This is a sad hack so the recent actions work with our custom 'ttadmin'
+    site instead of default.
+    """
+    if item.content_type and item.object_id:
+        url_name = 'ttadmin:%s_%s_change' % (item.content_type.app_label, item.content_type.model)
+        try:
+            return reverse(url_name, args=(quote(item.object_id),))
+        except NoReverseMatch:
+            pass
+    return None
