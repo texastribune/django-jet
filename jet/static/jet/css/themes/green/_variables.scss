@@ -196,3 +196,17 @@ $chart-pointHighlightFill: $hover-link-color;
 $chart-scaleGridLineColor: transparentize(#000, 0.9);
 $chart-scaleLineColor: transparentize(#000, 0.9);
 $chart-scaleFontColor: $content-contrast2-text-color;
+
+/*
+ * TT Files App
+ */
+:root {
+  --table-header-color: $content-contrast2-background-color !important;
+  --table-header-text-color: $content-contrast2-text-color !important;
+  --body-text-color: $text-color !important;
+  --browser-background: $background-color !important;
+  --button-color: $button-background-color !important;
+  --button-hover-color: $button-hover-background-color !important;
+  --icon-color: $content-contrast2-background-color !important;
+  --action-icon-color: $content-contrast2-background-color !important;
+};
