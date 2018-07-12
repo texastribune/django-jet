@@ -32,9 +32,19 @@ def tt_admin_url(item):
     site instead of default.
     """
     if item.content_type and item.object_id:
-        url_name = 'ttadmin:%s_%s_change' % (item.content_type.app_label, item.content_type.model)
+        ct = (item.content_type.app_label, item.content_type.model)
+        # Try our special edit-redirect URL for articles
+        if ct[0] == 'articles' and ct[1] == 'article':
+            try:
+                return reverse('ttadmin:%s_%s_edit_redirect' % ct,
+                               args=(quote(item.object_id),))
+            except NoReverseMatch:
+                # can't find it, so just use default change view
+                pass
+        # Custom redirect didn't work, so just go to default change view.
         try:
-            return reverse(url_name, args=(quote(item.object_id),))
+            return reverse('ttadmin:%s_%s_change' % ct,
+                           args=(quote(item.object_id),))
         except NoReverseMatch:
             pass
     return None
