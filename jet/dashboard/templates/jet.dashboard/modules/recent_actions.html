@@ -25,7 +25,7 @@
                     {% endif %}
 
                     {% if entry.content_type %}
-                        <span>{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</span>
+                        <span>{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
                     {% else %}
                         <span>{% trans 'Unknown content' %}</span>
                     {% endif %}
