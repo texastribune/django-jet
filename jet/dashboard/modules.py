@@ -502,6 +502,7 @@ class RecentActions(DashboardModule):
                     qset = current_qset
                 else:
                     qset = qset | current_qset
+            print('Here is the qset: {qset}')
             return qset
 
         qs = LogEntry.objects
@@ -517,7 +518,7 @@ class RecentActions(DashboardModule):
             qs = qs.exclude(get_qset(self.exclude_list))
 
         self.children = qs.select_related('content_type', 'user')[:int(self.limit)]
-        print(self.include_list)
+        print('and here is the children: {self.children}')
 
 
 class FeedSettingsForm(forms.Form):

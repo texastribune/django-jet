@@ -196,6 +196,7 @@ class Dashboard(object):
 
 class AppIndexDashboard(Dashboard):
     def get_app_content_types(self):
+        print(f'{self.app_label}.*')
         return self.app_label + '.*',
 
     def models(self):
