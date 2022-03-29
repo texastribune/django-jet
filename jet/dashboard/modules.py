@@ -517,6 +517,7 @@ class RecentActions(DashboardModule):
             qs = qs.exclude(get_qset(self.exclude_list))
 
         self.children = qs.select_related('content_type', 'user')[:int(self.limit)]
+        print(self.include_list)
 
 
 class FeedSettingsForm(forms.Form):
