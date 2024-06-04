@@ -209,12 +209,12 @@
 
 /* DATE DRILLDOWN */
 
-.change-list ul.toplinks {
+.change-list nav.toplinks {
   display: block;
   padding: 0;
   margin: 0;
 
-  li {
+  a {
     list-style-type: none;
     display: inline-block;
     margin: 0 5px 5px 0;
@@ -224,9 +224,7 @@
     font-size: 14px;
     padding: 6px 10px;
     border-radius: 4px;
-  }
 
-  a {
     &, &:visited {
       color: $button-text-color;
     }
